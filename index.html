@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sauenbelegung</title>
+<style>
+  :root{
+    --bg:#EFEDE4;
+    --card:#FFFFFF;
+    --ink:#1D1B17;
+    --ink-soft:#6B6A62;
+    --line:#D8D5C8;
+    --green:#2F4B3C;
+    --green-dark:#1E332A;
+    --ochre:#B5651D;
+    --ochre-light:#EFE0CE;
+    --danger:#A32D2D;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    padding-bottom:2rem;
+  }
+  header{
+    padding:1.1rem 1.2rem 0.9rem;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+  }
+  header h1{
+    font-size:19px;
+    font-weight:700;
+    margin:0;
+    letter-spacing:0.2px;
+  }
+  header span{
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .tabs{
+    display:flex;
+    margin:0 1.2rem 1rem;
+    background:var(--card);
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:0.7rem 0;
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink-soft);
+    cursor:pointer;
+    user-select:none;
+  }
+  .tab.active{
+    background:var(--green);
+    color:#fff;
+  }
+  main{padding:0 1.2rem;}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:1.1rem;
+    margin-bottom:1rem;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    margin:0 0 0.35rem;
+  }
+  input[type=number], input[type=date]{
+    width:100%;
+    font-size:19px;
+    padding:0.65rem 0.7rem;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    color:var(--ink);
+    margin-bottom:1rem;
+    font-family:inherit;
+  }
+  input:focus{outline:none;border-color:var(--green);}
+  .field-row{display:flex;gap:0.7rem;}
+  .field-row > div{flex:1;}
+  .group-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-bottom:1.1rem;
+  }
+  .group-btn{
+    aspect-ratio:1;
+    border:2px solid var(--line);
+    border-radius:10px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .group-btn .sym{
+    font-size:24px;
+    font-weight:700;
+    color:var(--ochre);
+    line-height:1;
+  }
+  .group-btn .num{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:3px;
+    font-weight:700;
+  }
+  .group-btn.selected{
+    border-color:var(--green);
+    background:var(--green);
+  }
+  .group-btn.selected .sym{color:#fff;}
+  .group-btn.selected .num{color:#D9E4DC;}
+  button.primary{
+    width:100%;
+    padding:0.85rem;
+    background:var(--green);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  button.primary:active{background:var(--green-dark);}
+  button.primary:disabled{background:#B4B2A9;}
+  .err{
+    color:var(--danger);
+    font-size:13px;
+    font-weight:700;
+    margin:-0.5rem 0 0.9rem;
+    display:none;
+  }
+  .recent{margin-top:0.2rem;}
+  .recent-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:0.6rem 0;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .recent-item:last-child{border-bottom:none;}
+  .recent-item .sym{
+    width:30px;height:30px;flex-shrink:0;
+    border-radius:6px;
+    background:var(--ochre-light);
+    color:var(--ochre);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:16px;
+  }
+  .recent-item .info{flex:1;}
+  .recent-item .info b{font-size:15px;}
+  .recent-item .info .sub{font-size:12px;color:var(--ink-soft);}
+  .recent-item .del{
+    color:var(--danger);
+    font-size:12px;
+    font-weight:700;
+    padding:6px 8px;
+    cursor:pointer;
+  }
+  select{
+    width:100%;
+    font-size:16px;
+    padding:0.65rem 0.7rem;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    color:var(--ink);
+    margin-bottom:1rem;
+    font-family:inherit;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+    border:1px solid var(--line);
+  }
+  th,td{
+    text-align:left;
+    padding:0.5rem 0.4rem;
+    border:1px solid var(--line);
+  }
+  th{
+    font-size:11px;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    letter-spacing:0.3px;
+  }
+  .empty{
+    color:var(--ink-soft);
+    font-size:14px;
+    text-align:center;
+    padding:1.5rem 0;
+  }
+  .print-btn{
+    width:100%;
+    padding:0.75rem;
+    background:#fff;
+    border:1.5px solid var(--green);
+    color:var(--green);
+    border-radius:8px;
+    font-size:15px;
+    font-weight:700;
+    margin-top:0.8rem;
+    cursor:pointer;
+  }
+  #hidden-panel{display:none;}
+  .group-heading{
+    font-size:16px;
+    font-weight:700;
+    margin:0 0 0.8rem;
+  }
+  @media print{
+    header, .tabs, #entry-panel, .print-btn, .no-print{display:none !important;}
+    body{background:#fff;padding:0;}
+    .card{border:none;padding:0;}
+    table{font-size:12px;table-layout:fixed;width:100%;border:1px solid #000;}
+    th,td{border:1px solid #000;}
+    th:nth-child(1),td:nth-child(1){width:12%;}
+    th:nth-child(2),td:nth-child(2){width:16%;}
+    th:nth-child(3),td:nth-child(3){width:16%;}
+    th:nth-child(4),td:nth-child(4){width:28%;}
+    th:nth-child(5),td:nth-child(5){width:28%;}
+    td{height:26px;word-break:break-word;}
+    .group-heading{font-size:18px;margin-bottom:10px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sauenbelegung</h1>
+  <span id="today"></span>
+</header>
+
+<div class="tabs no-print">
+  <div class="tab active" id="tab-entry">Eintragen</div>
+  <div class="tab" id="tab-list">Liste</div>
+</div>
+
+<main>
+
+  <div id="entry-panel">
+    <div class="card">
+      <label>Sauennummer</label>
+      <input type="number" id="nummer" inputmode="numeric" placeholder="z.B. 214">
+
+      <label>Belegdatum</label>
+      <input type="date" id="belegdatum">
+
+      <label>Gruppe</label>
+      <div class="group-grid" id="group-grid"></div>
+
+      <div class="err" id="err-msg">Bitte Sauennummer und Gruppe angeben.</div>
+      <button class="primary" id="save-btn">Eintragen</button>
+    </div>
+
+    <div class="card recent">
+      <label>Zuletzt erfasst</label>
+      <div id="recent-list"></div>
+    </div>
+  </div>
+
+  <div id="list-panel" style="display:none;">
+    <div class="card">
+      <label class="no-print">Gruppe wählen</label>
+      <select id="group-filter" class="no-print"></select>
+      <div class="group-heading" id="group-heading"></div>
+      <div id="list-table"></div>
+      <button class="print-btn no-print" id="print-btn">Liste drucken</button>
+      <button class="print-btn no-print" id="clear-group-btn" style="border-color:var(--danger);color:var(--danger);margin-top:0.5rem;">Gruppe komplett löschen</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const GROUPS = [
+  {n:1, sym:'^'},
+  {n:2, sym:'V'},
+  {n:3, sym:'-'},
+  {n:4, sym:'|'},
+  {n:5, sym:'X'},
+  {n:6, sym:'O'},
+  {n:7, sym:'+'}
+];
+const TRAGEZEIT = 115;
+
+// Nach dem Deployment des Apps Scripts hier die Web-App-URL eintragen:
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4dpbeHWprx_DfROdSUX56dWHjpAAOjgCXPIBrOcdHcfNcK5hhSOTamSMdkuhvXDOafA/exec';
+
+let entries = [];
+let selectedGroup = null;
+
+const todayStr = () => new Date().toISOString().slice(0,10);
+document.getElementById('today').textContent = new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+document.getElementById('belegdatum').value = todayStr();
+
+function fmtDate(iso){
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+function addDays(iso, days){
+  const d = new Date(iso+'T00:00:00');
+  d.setDate(d.getDate()+days);
+  return d.toISOString().slice(0,10);
+}
+function symFor(n){
+  const g = GROUPS.find(g=>g.n===n);
+  return g ? g.sym : '?';
+}
+
+function renderGroupGrid(){
+  const grid = document.getElementById('group-grid');
+  grid.innerHTML = '';
+  GROUPS.forEach(g=>{
+    const btn = document.createElement('div');
+    btn.className = 'group-btn' + (selectedGroup===g.n ? ' selected':'');
+    btn.innerHTML = `<div class="sym">${g.sym}</div><div class="num">Gruppe ${g.n}</div>`;
+    btn.onclick = ()=>{ selectedGroup = g.n; renderGroupGrid(); };
+    grid.appendChild(btn);
+  });
+}
+renderGroupGrid();
+
+function renderRecent(){
+  const list = document.getElementById('recent-list');
+  const recent = [...entries].sort((a,b)=> b.created - a.created).slice(0,8);
+  if(recent.length===0){
+    list.innerHTML = '<div class="empty">Noch keine Einträge.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  recent.forEach(e=>{
+    const row = document.createElement('div');
+    row.className = 'recent-item';
+    row.innerHTML = `
+      <div class="sym">${symFor(e.gruppe)}</div>
+      <div class="info"><b>${e.nummer}</b><div class="sub">Belegt ${fmtDate(e.belegdatum)} · Gruppe ${e.gruppe}</div></div>
+      <div class="del" data-id="${e.id}">Löschen</div>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('.del').forEach(el=>{
+    el.onclick = ()=> deleteEntry(el.dataset.id);
+  });
+}
+
+async function loadEntries(){
+  try{
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    entries = data.ok ? data.entries : [];
+  }catch(e){
+    console.error('Laden fehlgeschlagen', e);
+    entries = [];
+  }
+  renderRecent();
+  renderGroupFilterOptions();
+  renderList();
+}
+
+async function apiPost(body){
+  try{
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+  }catch(e){
+    console.error('Speichern fehlgeschlagen', e);
+  }
+}
+
+async function deleteEntry(id){
+  entries = entries.filter(e=>e.id!==id);
+  renderRecent();
+  renderList();
+  await apiPost({ action: 'delete', id });
+}
+
+document.getElementById('save-btn').onclick = async ()=>{
+  const nummer = document.getElementById('nummer').value.trim();
+  const belegdatum = document.getElementById('belegdatum').value;
+  const errEl = document.getElementById('err-msg');
+  if(!nummer || !belegdatum || selectedGroup===null){
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  const entry = {
+    id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+    nummer, belegdatum, gruppe: selectedGroup,
+    created: Date.now()
+  };
+  entries.push(entry);
+  document.getElementById('nummer').value = '';
+  renderGroupGrid();
+  renderRecent();
+  renderGroupFilterOptions();
+  renderList();
+  await apiPost({ action: 'add', ...entry });
+};
+
+function renderGroupFilterOptions(){
+  const sel = document.getElementById('group-filter');
+  const prev = sel.value;
+  sel.innerHTML = '';
+  GROUPS.forEach(g=>{
+    const opt = document.createElement('option');
+    opt.value = g.n;
+    opt.textContent = `Gruppe ${g.n}  (${g.sym})`;
+    sel.appendChild(opt);
+  });
+  if(prev) sel.value = prev;
+  sel.onchange = renderList;
+}
+
+function renderList(){
+  const groupSel = document.getElementById('group-filter');
+  const g = parseInt(groupSel.value || (GROUPS[0] && GROUPS[0].n), 10);
+  const rows = entries
+    .filter(e=>e.gruppe===g)
+    .sort((a,b)=> a.belegdatum.localeCompare(b.belegdatum));
+
+  const tableWrap = document.getElementById('list-table');
+
+  if(rows.length===0){
+    tableWrap.innerHTML = '<div class="empty">Keine Einträge in dieser Gruppe.</div>';
+  } else {
+    const buildRows = () => rows.map(e=>`
+      <tr><td>${e.nummer}</td><td>${fmtDate(e.belegdatum)}</td><td>${fmtDate(addDays(e.belegdatum,TRAGEZEIT))}</td><td></td><td></td></tr>
+    `).join('');
+    const head = `<tr><th>Sau Nr.</th><th>Belegedatum</th><th>Abferkeldatum</th><th>Betriebsspezifische Impfung</th><th>Kommentar</th></tr>`;
+    tableWrap.innerHTML = `
+      <table>
+        <thead>${head}</thead>
+        <tbody>${buildRows()}</tbody>
+      </table>`;
+  }
+
+  document.getElementById('group-heading').textContent = `Gruppe ${g}  (${symFor(g)})`;
+}
+
+document.getElementById('print-btn').onclick = ()=> window.print();
+
+document.getElementById('clear-group-btn').onclick = async ()=>{
+  const groupSel = document.getElementById('group-filter');
+  const g = parseInt(groupSel.value || (GROUPS[0] && GROUPS[0].n), 10);
+  const count = entries.filter(e=>e.gruppe===g).length;
+  if(count===0) return;
+  if(!confirm(`${count} Eintrag(e) aus Gruppe ${g} (${symFor(g)}) wirklich löschen?`)) return;
+  entries = entries.filter(e=>e.gruppe!==g);
+  renderRecent();
+  renderList();
+  await apiPost({ action: 'deleteGroup', gruppe: g });
+};
+
+document.getElementById('tab-entry').onclick = ()=>{
+  document.getElementById('tab-entry').classList.add('active');
+  document.getElementById('tab-list').classList.remove('active');
+  document.getElementById('entry-panel').style.display = 'block';
+  document.getElementById('list-panel').style.display = 'none';
+};
+document.getElementById('tab-list').onclick = ()=>{
+  document.getElementById('tab-list').classList.add('active');
+  document.getElementById('tab-entry').classList.remove('active');
+  document.getElementById('list-panel').style.display = 'block';
+  document.getElementById('entry-panel').style.display = 'none';
+  renderList();
+};
+
+loadEntries();
+</script>
+
+</body>
+</html>
